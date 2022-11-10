@@ -36,8 +36,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 }
             })
         }
-
-
     }
 
     private fun emailTextChangeListener(){
@@ -113,3 +111,5 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         _binding = null
     }
 }
+
+//https://api.dev.myautochek.com/v1/auth/login

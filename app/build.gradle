@@ -20,6 +20,7 @@ android {
         versionCode 1
         versionName "1.0"
 
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -63,4 +64,9 @@ dependencies {
     //Kotlinx Serialization dependency
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinx_serialization"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$kotlinx_serialization_converter"
+
+
+    //retrofit, OKHTTP
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3"
 }
