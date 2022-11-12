@@ -1,38 +1,31 @@
 package com.example.loginsignupauth.di
 
+import android.util.Log
 import com.example.loginsignupauth.BuildConfig
-import com.example.loginsignupauth.constants.Constants.BASE_URL
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
+import com.example.loginsignupauth.cache.AuthTokenPref
 import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONException
 import org.json.JSONObject
-import retrofit2.Converter
-import retrofit2.Retrofit
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import javax.inject.Singleton
 
 
-@Module
-@InstallIn(SingletonComponent::class)
-object NetworkModule {
+@Singleton
+class CoreOkHttpClient @Inject constructor(private val authTokenPref: AuthTokenPref) {
 
-    @Provides
-    @Singleton
-    fun provideOkHttpClient() : OkHttpClient {
+    private val okHttpClient: OkHttpClient by lazy { buildOkHttpClient() }
+
+
+    private fun buildOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(makeLoggingInterceptor())
+            .addInterceptor(AuthInterceptor(authTokenPref))
             .addInterceptor(ErrorInterceptor()) // always add this last, so okhttp executes it last
             .connectTimeout(60, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
@@ -48,6 +41,28 @@ object NetworkModule {
             HttpLoggingInterceptor.Level.NONE
         }
         return logging
+    }
+
+    operator fun invoke(): OkHttpClient {
+        return okHttpClient
+    }
+
+    class AuthInterceptor(private var tokenManager: AuthTokenPref) : Interceptor {
+
+        @Throws(IOException::class)
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val request = chain.request()
+            val requestBuilder = request.newBuilder()
+            tokenManager.getAuthToken()?.let {
+                if (BuildConfig.DEBUG) Log.d(TAG, "AUTH TOKEN $it")
+                requestBuilder.addHeader("Authorization", "Bearer $it")
+            }
+            return chain.proceed(requestBuilder.build())
+        }
+
+        companion object {
+            private val TAG = AuthInterceptor::class.java.canonicalName
+        }
     }
 
     class ErrorInterceptor : Interceptor {
@@ -76,30 +91,5 @@ object NetworkModule {
         }
 
         class ServerErrorException(message: String) : IOException(message)
-    }
-
-    private val json = Json {
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-    }
-
-    @ExperimentalSerializationApi
-    @Provides
-    @Singleton
-    fun providerConverterFactory(): Converter.Factory {
-        return json.asConverterFactory("application/json".toMediaType())
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(
-        okHttpClient: OkHttpClient,
-        converterFactory: Converter.Factory
-    ) : Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(converterFactory)
-            .build()
     }
 }

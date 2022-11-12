@@ -8,14 +8,6 @@ import com.google.android.material.textfield.TextInputEditText
 fun String.isValidEmail(): Boolean = this.isNotEmpty() &&
         Patterns.EMAIL_ADDRESS.matcher(this).matches() && this.contains('@')
 
-fun validateEmailPattern(inputEmail: String): Boolean{
-    val emailPattern = "()".toRegex()
-    if (inputEmail.matches(emailPattern)) {
-        return true
-    }
-    return false
-}
-
 fun String.atLeastOneLowerCase() : Boolean {
     val pattern = "(.*[a-z].*)".toRegex()
     return this.matches(pattern)

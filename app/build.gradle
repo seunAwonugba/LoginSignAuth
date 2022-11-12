@@ -69,4 +69,14 @@ dependencies {
     //retrofit, OKHTTP
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3"
+
+
+    // Room
+    implementation "androidx.room:room-runtime:$room"
+    kapt "androidx.room:room-compiler:$room"
+    implementation "androidx.room:room-ktx:$room"
+    implementation "androidx.room:room-paging:$room"
+
+    //lottie
+    implementation "com.airbnb.android:lottie:$lottie"
 }

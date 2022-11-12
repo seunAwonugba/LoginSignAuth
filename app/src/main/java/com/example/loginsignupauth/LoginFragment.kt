@@ -6,14 +6,25 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.loginsignupauth.databinding.FragmentLoginBinding
+import com.example.loginsignupauth.model.local.LoginRequest
+import com.example.loginsignupauth.model.local.LoginResponse
 import com.example.loginsignupauth.utils.*
+import com.example.loginsignupauth.viewmodel.AuthViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 
+@AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+
+
+    private val viewModel : AuthViewModel by viewModels()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,6 +47,21 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 }
             })
         }
+
+        viewModel.state.onEach {
+            handleLoginState(it.loginRes)
+        }.launchIn(viewLifecycleScope)
+
+        //login
+        binding.loginBtn.setOnClickListener {
+            viewModel.login(
+                data = LoginRequest(
+                    email = binding.etEmail.text.toString(),
+                    password = binding.etPassword.text.toString()
+                )
+            )
+        }
+
     }
 
     private fun emailTextChangeListener(){
@@ -102,6 +128,24 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             binding.loginBtn.isEnabled = email == true && password == true
         }
         override fun afterTextChanged(s: Editable) {}
+    }
+
+    private fun handleLoginState(res : Resource<LoginResponse>){
+        when(res.status){
+            Resource.Status.ERROR -> {
+                val err = res.exception.toString()
+                hideLoadingDialog()
+                showSnackBar(err)
+            }
+            Resource.Status.LOADING -> {
+                showLoadingDialog()
+            }
+            Resource.Status.SUCCESS ->{
+                hideLoadingDialog()
+                showSnackBar("Login successful")
+            }
+            else -> {}
+        }
     }
 
 

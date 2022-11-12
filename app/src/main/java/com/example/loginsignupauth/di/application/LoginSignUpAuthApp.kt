@@ -1,4 +1,4 @@
-package com.example.loginsignupauth.di
+package com.example.loginsignupauth.di.application
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

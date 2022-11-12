@@ -1,8 +1,7 @@
 package com.example.loginsignupauth.di
 
 import com.example.loginsignupauth.network.AuthWebService
-import com.example.loginsignupauth.repository.AuthRepository
-import com.example.loginsignupauth.repository.AuthRepositoryImpl
+import com.example.loginsignupauth.network.UserWebService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,11 +10,9 @@ import retrofit2.Retrofit
 import retrofit2.create
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule {
-
+object WebServiceProviders {
 
 
     @Singleton
@@ -25,7 +22,5 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideAuthRepository(
-        authWebService: AuthWebService
-    ) : AuthRepository = AuthRepositoryImpl(authWebService)
+    fun provideUserWebService(retrofit: Retrofit): UserWebService = retrofit.create()
 }
