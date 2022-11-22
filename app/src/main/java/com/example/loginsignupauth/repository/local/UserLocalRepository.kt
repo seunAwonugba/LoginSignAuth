@@ -4,9 +4,6 @@ import com.example.loginsignupauth.model.local.UserResponse
 
 interface UserLocalRepository {
 
-
-//    fun getUser(): UserResponse?
-
     fun getAuthToken(): String?
 
     suspend fun saveUser(userResponse: UserResponse)
@@ -16,5 +13,8 @@ interface UserLocalRepository {
 //    suspend fun deleteUser()
 
     suspend fun clearAuthToken()
+
+    fun getCurrentUserId(): String?
+
 
 }

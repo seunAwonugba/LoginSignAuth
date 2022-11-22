@@ -1,7 +1,9 @@
 package com.example.loginsignupauth.utils
 
+import android.content.Context
 import android.text.InputFilter
 import android.util.Patterns
+import androidx.annotation.DimenRes
 import com.google.android.material.textfield.TextInputEditText
 
 
@@ -40,6 +42,9 @@ fun TextInputEditText.filterWhiteSpace(text : TextInputEditText){
     }
     text.filters = arrayOf(filter)
 }
+
+fun Context.px(@DimenRes dimen: Int): Int = resources.getDimension(dimen).toInt()
+
 
 
 //val filter = InputFilter { source, start, end, dest, dstart, dend ->

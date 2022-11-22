@@ -1,6 +1,5 @@
 package com.example.loginsignupauth.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,7 +13,7 @@ interface UsersDataDao {
     suspend fun saveUsers(userResponse: UserResponse)
 
     @Query("SELECT * FROM saved_user_data LIMIT 1")
-    fun getUser(): LiveData<UserResponse?>
+    fun getUser(): UserResponse?
 
     @Query("DELETE FROM saved_user_data")
     suspend fun deleteUser()

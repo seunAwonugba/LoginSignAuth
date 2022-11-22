@@ -3,9 +3,8 @@ package com.example.loginsignupauth.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.loginsignupauth.model.local.LoginRequest
 import com.example.loginsignupauth.model.local.UserResponse
-import com.example.loginsignupauth.repository.remote.AuthRepository
+import com.example.loginsignupauth.repository.remote.UserRepository
 import com.example.loginsignupauth.utils.Resource
 import com.example.loginsignupauth.utils.updateValue
 import com.example.loginsignupauth.utils.wrapAsResource
@@ -17,31 +16,36 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+class UserViewModel @Inject constructor(
+    private val userRepository: UserRepository
 ) : ViewModel() {
-
 
     private val _state = MutableStateFlow(State())
     val state: StateFlow<State> = _state
 
+    init {
+        getUser()
+    }
 
-    fun login(data : LoginRequest){
-        authRepository.login(data = data)
+
+    private fun getUser(){
+        userRepository.getUserById()
             .wrapAsResource()
             .onEach {
-                Log.e("LOGIN_STATE", it.toString())
+                Log.e("USER_DETAILS", it.toString())
                 _state.updateValue {
-                    copy(loginRes = it)
+                    copy(userRes = it)
                 }
             }
             .launchIn(viewModelScope)
     }
 
 
+
     companion object {
         data class State(
-            val loginRes: Resource<UserResponse> = Resource.initial(),
+            val userRes: Resource<UserResponse> = Resource.initial(),
         )
     }
+
 }

@@ -10,10 +10,6 @@ class UserLocalRepositoryImpl @Inject constructor(
     private val usersDataDao: UsersDataDao
 ) : UserLocalRepository {
 
-//    override fun getUser(): UserResponse? {
-//        return usersDataDao.getUser()
-//    }
-
     override fun getAuthToken(): String? {
         return authTokenPref.getAuthToken()
     }
@@ -32,6 +28,10 @@ class UserLocalRepositoryImpl @Inject constructor(
 
     override suspend fun clearAuthToken() {
         return authTokenPref.deleteAuthToken()
+    }
+
+    override fun getCurrentUserId(): String? {
+        return usersDataDao.getUser()?.id
     }
 
 

@@ -55,8 +55,16 @@ fun Fragment.showLoadingDialog() {
     showDialogFragment { LoadingDialogFragment() }
 }
 
+fun Fragment.showAppLoader() {
+    showDialogFragment { AppLoadingDialog() }
+}
+
 fun Fragment.hideLoadingDialog() {
     dismissDialog<LoadingDialogFragment>()
+}
+
+fun Fragment.hideAppLoader() {
+    dismissDialog<AppLoadingDialog>()
 }
 
 inline fun <reified T : DialogFragment> Fragment.showDialogFragment(

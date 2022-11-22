@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.loginsignupauth.databinding.FragmentLoginBinding
 import com.example.loginsignupauth.model.local.LoginRequest
-import com.example.loginsignupauth.model.local.LoginResponse
+import com.example.loginsignupauth.model.local.UserResponse
 import com.example.loginsignupauth.utils.*
 import com.example.loginsignupauth.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,15 +53,16 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }.launchIn(viewLifecycleScope)
 
         //login
-        binding.loginBtn.setOnClickListener {
-            viewModel.login(
-                data = LoginRequest(
-                    email = binding.etEmail.text.toString(),
-                    password = binding.etPassword.text.toString()
+        with(binding){
+            loginBtn.setOnClickListener {
+                viewModel.login(
+                    data = LoginRequest(
+                        email = etEmail.text.toString(),
+                        password = etPassword.text.toString()
+                    )
                 )
-            )
+            }
         }
-
     }
 
     private fun emailTextChangeListener(){
@@ -130,12 +131,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         override fun afterTextChanged(s: Editable) {}
     }
 
-    private fun handleLoginState(res : Resource<LoginResponse>){
+    private fun handleLoginState(res : Resource<UserResponse>){
         when(res.status){
             Resource.Status.ERROR -> {
-                val err = res.exception.toString()
+                val err = res.exception?.message
                 hideLoadingDialog()
-                showSnackBar(err)
+                showSnackBar(err.toString())
             }
             Resource.Status.LOADING -> {
                 showLoadingDialog()
@@ -143,6 +144,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             Resource.Status.SUCCESS ->{
                 hideLoadingDialog()
                 showSnackBar("Login successful")
+                navController.navigate(R.id.userFragment)
             }
             else -> {}
         }
@@ -155,5 +157,3 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         _binding = null
     }
 }
-
-//https://api.dev.myautochek.com/v1/auth/login
