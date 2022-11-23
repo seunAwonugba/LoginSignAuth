@@ -63,6 +63,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 )
             }
         }
+
+        if (viewModel.isLoggedIn()){
+            navController.navigate(R.id.userFragment)
+        }
     }
 
     private fun emailTextChangeListener(){

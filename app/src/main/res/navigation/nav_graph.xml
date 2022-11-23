@@ -8,23 +8,29 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.loginsignupauth.LoginFragment"
-        android:label="fragment_login"
+        android:label="Login"
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
+            app:destination="@id/signUpFragment"/>
         <action
             android:id="@+id/action_loginFragment_to_userFragment"
-            app:destination="@id/userFragment" />
+            app:destination="@id/userFragment"
+            />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.example.loginsignupauth.SignUpFragment"
-        android:label="fragment_sign_up"
+        android:label="Sign Up"
         tools:layout="@layout/fragment_sign_up" />
     <fragment
         android:id="@+id/userFragment"
         android:name="com.example.loginsignupauth.UserFragment"
-        android:label="fragment_user"
-        tools:layout="@layout/fragment_user" />
+        android:label="User Details"
+        tools:layout="@layout/fragment_user" >
+        <action
+            android:id="@+id/action_userFragment_pop_including_loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

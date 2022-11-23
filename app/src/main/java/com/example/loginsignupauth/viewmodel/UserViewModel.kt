@@ -32,7 +32,6 @@ class UserViewModel @Inject constructor(
         userRepository.getUserById()
             .wrapAsResource()
             .onEach {
-                Log.e("USER_DETAILS", it.toString())
                 _state.updateValue {
                     copy(userRes = it)
                 }

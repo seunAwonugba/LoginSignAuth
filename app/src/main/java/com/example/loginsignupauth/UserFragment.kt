@@ -42,10 +42,16 @@ class UserFragment : Fragment(R.layout.fragment_user) {
             }
             Resource.Status.SUCCESS ->{
                 hideAppLoader()
+                with(binding){
+                    userNameId.text = context?.resources?.getString(
+                        R.string.full_name, res.data?.firstname, res.data?.lastname
+                    )
+                }
             }
             else -> {}
         }
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

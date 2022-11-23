@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.loginsignupauth.model.local.LoginRequest
 import com.example.loginsignupauth.model.local.UserResponse
 import com.example.loginsignupauth.repository.remote.AuthRepository
+import com.example.loginsignupauth.repository.remote.UserRepository
 import com.example.loginsignupauth.utils.Resource
 import com.example.loginsignupauth.utils.updateValue
 import com.example.loginsignupauth.utils.wrapAsResource
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
 
@@ -30,12 +32,15 @@ class AuthViewModel @Inject constructor(
         authRepository.login(data = data)
             .wrapAsResource()
             .onEach {
-                Log.e("LOGIN_STATE", it.toString())
                 _state.updateValue {
                     copy(loginRes = it)
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    fun isLoggedIn() : Boolean{
+        return userRepository.getAuthToken() != null
     }
 
 
